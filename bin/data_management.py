@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os, ast
-dir_name = "TempControl"
-dir_location = "F:\\usuarios\\Bruno Trebbi\\2025\\Spintra"
+dir_name = "data"
+dir_location = "F:\\usuarios\\Bruno Trebbi\\2025\\SPINtra"
 
 
 class  Experiment:
