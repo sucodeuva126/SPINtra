@@ -8,7 +8,6 @@ class BVT:
     self.threshold = threshold
     self.bvt_server = win.Dispatch("WinAcquisit.BVT")
     self.emb = win.Dispatch("WinAcquisit.Embedding")
-    self.emb.ShowWindow(self.emb.NORMAL)
     self.uti = win.Dispatch("WinAcquisit.Utilities")
 
   def start(self, gas_flow, evaporator):
