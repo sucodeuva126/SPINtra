@@ -59,7 +59,7 @@ class CLI:
       self.clean_screen_and_print_header()
       options = ["Start experiment", "Select existent experiment", "Create new experiment", "Select thermal device", "Thermal devices operations"]
       print(CLI_visual.gen_selection(options=options, final_option="Exit"))
-      selection = input("{0}Enter Selection >".format(WHITE))
+      selection = input("{0}Enter Selection > ".format(WHITE))
       if selection == 1:
         if self.selected_experiment != None:
           self.run_experiment()
@@ -95,7 +95,7 @@ class CLI:
     options = ["BVT", "KM3P"]
     print("{0}Select the thermal device:".format(WHITE))
     print(CLI_visual.gen_selection(options=options, final_option="Back"))
-    selection = input("{0}Enter Selection >".format(WHITE))
+    selection = input("{0}Enter Selection > ".format(WHITE))
     if selection == 1:
       self.selected_device = options[0]
       print("Device" +" " +"\"" + "{}".format(options[0])+ "\"" + " " + " has been selected.")
@@ -122,11 +122,11 @@ class CLI:
     temp_dim = ["K", "°C"]
     methods = ["Start autotunning","Set Point and start ramp"]
     print(CLI_visual.gen_selection(options=options, final_option="Back"))
-    device_selection = int(input("Enter selection >"))
+    device_selection = int(input("Enter selection > "))
     device = Device(options[device_selection-1], tolerance=1)
     if device_selection == 1:
       print(CLI_visual.gen_selection(options=methods, final_option="Back"))
-      selection = input("{0}Enter Selection >".format(WHITE))
+      selection = input("{0}Enter Selection > ".format(WHITE))
       if selection == 1:
         device.autotune(switch=True)
         self.device_ops_menu()
@@ -136,7 +136,7 @@ class CLI:
         self.device_ops_menu()
     elif device_selection == 2:  
       print(CLI_visual.gen_selection(options=methods, final_option="Back"))
-      selection = input("{0}Enter Selection >".format(WHITE))
+      selection = input("{0}Enter Selection > ".format(WHITE))
     elif device_selection == 3:
       print("Returning to menu in 1s...")
       time.sleep(1)
@@ -188,7 +188,7 @@ class CLI:
       self.start_menu()
     temps = []
     waiting_times = []
-    number_of_temps_intervals = int(input("How many temperatures intervals? >"))
+    number_of_temps_intervals = int(input("How many temperatures intervals? > "))
     for i in range(number_of_temps_intervals):
       interval = []
       step = float(input("Temperature step for interval" + " " +"{}".format(i+1) +" >" ))
@@ -258,8 +258,8 @@ class CLI:
       print("ERROR CONNECTING TO THE MINISPEC")
     device = Device(self.selected_device, temp_tolerance)
     if self.selected_device == "BVT":
-      a = raw_input("Turn on the evaporator?[y/n]")
-      g = float(input("Gas flow(l/h)>"))
+      a = raw_input("Turn on the evaporator?[y/n] ")
+      g = float(input("Gas flow(l/h)> "))
       if a == "y":
         ev = True
       else:
@@ -315,6 +315,10 @@ class CLI:
       device = None
       
     finally:
+      if self.selected_device == "BVT":
+        device.set_point_and_start_ramp(300)
+      if self.selected_device == "KM3P":
+        device.set_point_and_start_ramp(27)
       if check_thread is not None:
         device.stop_check.set()
         check_thread.join()
@@ -328,9 +332,10 @@ class CLI:
       device = None
       self.experiment_running = False
       self.selected_experiment = None
+      self.selected_device = None
       print("\n")
       print("Experiment "+ "{}". format(current_experiment.name)  +" has finished...")
-      r = raw_input(" {} Would you like to return to main menu?[y/n]".format(WHITE))
+      r = raw_input("{} Would you like to return to main menu?[y/n] ".format(WHITE))
       if r == "y":
         self.start_menu()
       elif r == "n":
