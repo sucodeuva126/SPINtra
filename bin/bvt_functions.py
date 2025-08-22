@@ -6,10 +6,13 @@ class BVT:
     self.isTemperatureReady = False
     self.current_temp = None
     self.threshold = threshold
-    self.bvt_server = win.Dispatch("WinAcquisit.BVT")
-    self.emb = win.Dispatch("WinAcquisit.Embedding")
-    self.emb.ShowWindow(self.emb.NORMAL)
-    self.uti = win.Dispatch("WinAcquisit.Utilities")
+    if not hasattr(self, 'emb'):
+      self.emb = win.Dispatch("WinAcquisit.Embedding")
+      self.emb.ShowWindow(self.emb.NORMAL)
+    if not hasattr(self, 'bvt_server'):
+      self.bvt_server = win.Dispatch("WinAcquisit.BVT")
+    if not hasattr(self, "uti"):
+      self.uti = win.Dispatch("WinAcquisit.Utilities")
 
   def start(self, gas_flow, evaporator):
     self.init_com_server()
