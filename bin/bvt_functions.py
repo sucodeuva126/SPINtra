@@ -1,20 +1,16 @@
 import win32com.client as win
 
-
 class BVT:
   def __init__(self, threshold):
     self.isTemperatureReady = False
     self.current_temp = None
     self.threshold = threshold
 
-  def init_com_server(self):
-    if not hasattr(self, 'emb'):
-      self.emb = win.Dispatch("WinAcquisit.Embedding")
-      self.emb.ShowWindow(self.emb.NORMAL)
-    if not hasattr(self, 'bvt_server'):
-      self.bvt_server = win.Dispatch("WinAcquisit.BVT")
-    if not hasattr(self, "uti"):
-      self.uti = win.Dispatch("WinAcquisit.Utilities")
+  def init_com_server(self): #COM objects are not thread safe
+    self.emb = win.Dispatch("WinAcquisit.Embedding")
+    self.emb.ShowWindow(self.emb.NORMAL)
+    self.bvt_server = win.Dispatch("WinAcquisit.BVT")
+    self.uti = win.Dispatch("WinAcquisit.Utilities")
 
   def start(self, gas_flow, evaporator):
     self.init_com_server()
