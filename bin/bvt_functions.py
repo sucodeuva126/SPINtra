@@ -6,6 +6,8 @@ class BVT:
     self.isTemperatureReady = False
     self.current_temp = None
     self.threshold = threshold
+
+  def init_com_server(self):
     if not hasattr(self, 'emb'):
       self.emb = win.Dispatch("WinAcquisit.Embedding")
       self.emb.ShowWindow(self.emb.NORMAL)
