@@ -6,7 +6,7 @@ class BVT:
     self.current_temp = None
     self.threshold = threshold
 
-  def init_com_server(self): #COM objects are not thread safe
+  def init_com_server(self): #COM objects are not thread safe #PROBLEM HERE
     self.emb = win.Dispatch("WinAcquisit.Embedding")
     self.emb.ShowWindow(self.emb.NORMAL)
     self.bvt_server = win.Dispatch("WinAcquisit.BVT")
