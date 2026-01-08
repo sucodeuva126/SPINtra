@@ -1,4 +1,5 @@
 import win32com.client as win
+import pythoncom
 
 class BVT:
   def __init__(self, threshold):
@@ -13,6 +14,7 @@ class BVT:
     self.uti = win.Dispatch("WinAcquisit.Utilities")
 
   def start(self, gas_flow, evaporator):
+    pythoncom.CoInitialize()
     self.init_com_server()
     self.bvt_server.GasFlow(gas_flow)
     self.bvt_server.GasFlowOn(True)
@@ -20,35 +22,44 @@ class BVT:
       self.bvt_server.EvaporatorOn(True)
       self.bvt_server.EvaporatorPower(gas_flow)
     self.bvt_server.HeaterOn(True)
+    pythoncom.CoUninitialize()
     return
 
   def set_point_and_start_ramp(self, temp):
+    pythoncom.CoInitialize()
     self.init_com_server()
     self.bvt_server.DesiredTemperature(temp)
     self.bvt_server.RampGO
+    pythoncom.CoUninitialize()
     return 
 
   def autotune(self, switch):
+    pythoncom.CoInitialize()
     self.init_com_server()
     if switch == True:
       self.bvt_server.PIDTuneOn(True)
     if switch == False:
       self.bvt_server.PIDTuneOn(False)
+    pythoncom.CoUninitialize()
     return
     
   def get_temperature(self):
+    pythoncom.CoInitialize()
     self.init_com_server()
     try:
         self.current_temp  = self.bvt_server.GetTemperature #saves the temperature read
     except Exception as e:
         print("ERROR IN READING TEMPERATURES", e)
+    pythoncom.CoUninitialize()
 
   def check_temperature(self, temp): #thread function
+    pythoncom.CoInitialize()
     self.init_com_server()
     if self.current_temp is not None:
         if self.bvt_server.IsTemperatureOK: #verify if the mesured temperature is the desired temperature 
             self.isTemperatureReady = True
         else:
             self.isTemperatureReady = False
+    pythoncom.CoUninitialize()
 
 
