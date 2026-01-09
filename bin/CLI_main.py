@@ -57,23 +57,24 @@ class CLI:
       print(CLI_visual.gen_selection(options=options, final_option="Exit"))
       selection = input("{0}Enter Selection > ".format(WHITE))
       if selection == 1:
-        if self.selected_experiment != None:
+        if self.selected_experiment != None and self.selected_device != None:
           self.run_experiment()
           return
-        else:
+        elif self.selected_experiment == None:
           print("Please, select an experiment first.")
           time.sleep(1.5)
           self.start_menu()
           return
-        if self.selected_device != None:
-          self.run_experiment()
-          return
-        else:
+        elif self.selected_device == None:
           print("Please, select an device first.")
           time.sleep(1.5)
           self.start_menu()
           return
-        
+        else:
+          print("Please, select an device and an experiment first.")
+          time.sleep(1.5)
+          self.start_menu()
+          return 
       elif selection == 2:
         self.experiment_selection_menu()
         return
@@ -318,6 +319,8 @@ class CLI:
         screen_thread.join()
       pnmr = None
       device = None
+      self.selected_experiment = None
+      self.selected_device = None
       
     finally:
       if self.selected_device == "BVT":
