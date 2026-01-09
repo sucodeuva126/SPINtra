@@ -65,6 +65,15 @@ class CLI:
           time.sleep(1.5)
           self.start_menu()
           return
+        if self.selected_device != None:
+          self.run_experiment()
+          return
+        else:
+          print("Please, select an device first.")
+          time.sleep(1.5)
+          self.start_menu()
+          return
+        
       elif selection == 2:
         self.experiment_selection_menu()
         return
