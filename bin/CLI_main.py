@@ -33,10 +33,6 @@ class CLI:
     self.selected_device = None
     self.current_waiting = None
     self.current_app = None
-    self.current_temp = None
-    self.scans_to_do = None
-    self.scans_done = None
-    self.scans_bar = None
     self.lock = threading.Lock()
     self.stop_run_screen = threading.Event()
     self.start_menu()
@@ -233,7 +229,7 @@ class CLI:
             color = YELLOW
           sys.stdout.write("\r{0}Current temperature: {2}{3}   |   {0}Current pulse sequence: {1}{4}   |   {0}Current waiting time for thermalization: {1}{5}".format(CYAN, WHITE, color, device.current_temp, self.current_app, self.current_waiting))
           sys.stdout.flush()
-          time.sleep(0.1)
+          time.sleep(0.5)
  
   def run_experiment(self):
     self.experiment_running = True
