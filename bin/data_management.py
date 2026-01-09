@@ -1,14 +1,9 @@
 # -*- coding: utf-8 -*-
 import os, ast
-#dir_name = "data"
-#dir_location = "F:\\usuarios\\Bruno Trebbi\\2025\\SPINtra"
 file_path = os.path.abspath(__file__)
 dir_location = os.path.dirname(file_path).replace("\\bin", "")
 dir_name = os.path.basename(dir_location + "\\data")
 
-print(file_path)
-print(dir_location)
-print(dir_name)
 class  Experiment:
     def __init__(self, name, device ,temperatures, waiting_time, pulse_sequence ): #defines a experiment
        self.temperatures = temperatures
