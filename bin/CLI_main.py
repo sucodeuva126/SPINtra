@@ -48,7 +48,7 @@ class CLI:
       print('by L.A.R.M.M.O.R.')
       print("\n")
       if self.selected_experiment != None: #checks if there is an selected experiment to show to the user
-        print("{0}Selected experiment:". format(RED)+ " " +"{}".format(self.selected_experiment))
+        print("{0}Selected experiment:". format(GREEN)+ " " +"{}".format(self.selected_experiment))
         print("\n")
       if self.selected_device != None: #checks if there is an selected thermal device to show to the user
         print("{0}Selected thermal control device:". format(YELLOW)+ " " +"{}".format(self.selected_device))
@@ -194,7 +194,7 @@ class CLI:
       step = float(input("Temperature step for interval" + " " +"{}".format(i+1) +" >" ))
       initial_limit = float(input("Initial temperature of interval" + " " +"{}".format(i+1) +" >"))
       final_limit = float(input("Final temperature of interval" + " " +"{}".format(i+1) +" >"))
-      waiting = float(input("Thermalization waiting time for interval (seconds)" + " " +"{}".format(i+1)+" >"))
+      waiting = float(input("Thermalization waiting time for interval" + " " +"{}".format(i+1)+" (seconds) >"))
       waiting_times.append(waiting)
       interval.append(initial_limit)
       t = initial_limit
@@ -207,9 +207,9 @@ class CLI:
           t = t - step
           interval.append(t)
       temps.append(interval)
-    print(CLI_visual.gen_selection(self.applications_files, final_option="Back"))
     pulse_sequences = []
     number_of_pulse_sequences = int(input("How many pulse sequences? >")) #ADD BACK OPTION
+    print(CLI_visual.gen_selection(self.applications_files, final_option="Back"))
     for i in range(number_of_pulse_sequences):
       ask = int(input("Pulse sequence"  +" "+"{}".format(i+1) + " >"))
       pulse_sequences.append(self.applications_files[ask-1])
