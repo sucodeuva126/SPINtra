@@ -11,7 +11,6 @@ class BVT:
 
   def _ensure_com(self):
     if not hasattr(self._tls, "initialized"):
-        pythoncom.CoInitialize()
         self._tls.emb = win.Dispatch("WinAcquisit.Embedding")
         self._tls.bvt_server = win.Dispatch("WinAcquisit.BVT")
         self._tls.uti = win.Dispatch("WinAcquisit.Utilities")
@@ -22,7 +21,6 @@ class BVT:
         del self._tls.emb
         del self._tls.bvt_server
         del self._tls.uti
-        pythoncom.CoUninitialize()
         del self._tls.initialized
 
   def start(self, gas_flow, evaporator):
