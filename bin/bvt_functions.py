@@ -18,10 +18,10 @@ class BVT:
 
   def _release_com(self):
     if hasattr(self._tls, "initialized"):
-        del self._tls.emb
-        del self._tls.bvt_server
-        del self._tls.uti
-        del self._tls.initialized
+        pythoncom.ReleaseComObject(self._tls.emb)
+        pythoncom.ReleaseComObject(self._tls.bvt_server)
+        pythoncom.ReleaseComObject(self._tls.uti)
+        pythoncom.ReleaseComObject(self._tls.initialized)
 
   def start(self, gas_flow, evaporator):
     self._ensure_com()
