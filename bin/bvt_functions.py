@@ -10,10 +10,7 @@ class BVT:
 
   def init_com_server(self): #COM objects are not thread safe #PROBLEM HERE
     pythoncom.CoInitialize()
-    self.emb = win.Dispatch("WinAcquisit.Embedding")
-    self.emb.ShowWindow(self.emb.NORMAL)
     self.bvt_server = win.Dispatch("WinAcquisit.BVT")
-    self.uti = win.Dispatch("WinAcquisit.Utilities")
 
   def end_com_server(self):
      self.emb = None
