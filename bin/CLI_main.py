@@ -10,6 +10,7 @@ from devices import Device
 import threading
 import colorama
 import signal
+import subprocess
 from tqdm import tqdm
 
 interrupt = threading.Event()
@@ -242,6 +243,7 @@ class CLI:
         time.sleep(0.5)
  
   def run_experiment(self):
+    subprocess.call(["taskkill", "/IM", "WinAcquisit.exe", "/F"])
     self.experiment_running = True
     temp_tolerance = 1
     current_experiment = file_to_experiment(self.selected_experiment)
@@ -343,6 +345,7 @@ class CLI:
       self.experiment_running = False
       self.selected_experiment = None
       self.selected_device = None
+      subprocess.call(["taskkill", "/IM", "WinAcquisit.exe", "/F"])
       print("\n")
       print("Experiment "+ "{}". format(current_experiment.name)  +" has finished...")
       r = raw_input("{} Would you like to return to main menu?[y/n] ".format(WHITE))
