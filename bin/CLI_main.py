@@ -323,7 +323,7 @@ class CLI:
       self.selected_device = None
       
     finally:
-      pnmr.ClosePNMR()
+      pnmr.ClosePNMR(True)
       if self.selected_device == "BVT":
         device.set_point_and_start_ramp(300)
       if self.selected_device == "KM3P":
