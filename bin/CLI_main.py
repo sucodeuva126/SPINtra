@@ -237,7 +237,7 @@ class CLI:
           color = GREEN
         else:
           color = YELLOW
-        sys.stdout.write("\r{0}Current temperature: {2}{3}   |   {0}Current pulse sequence: {1}{4}   |   {0}Current waiting time for thermalization: {1}{5}".format(CYAN, WHITE, color, device.temp, self.current_app, self.current_waiting))
+        sys.stdout.write("\r{0}Current temperature: {2}{3}   |   {0}Current pulse sequence: {1}{4}   |   {0}Current waiting time for thermalization: {1}{5}".format(CYAN, WHITE, color, device.current_temp, self.current_app, self.current_waiting))
         sys.stdout.flush()
         time.sleep(0.5)
  
