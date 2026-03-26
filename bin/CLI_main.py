@@ -11,6 +11,7 @@ import threading
 import colorama
 import signal
 from tqdm import tqdm
+import pythoncom
 
 interrupt = threading.Event()
 def handle_keyboard_interrupt(signum, frame):
@@ -323,6 +324,7 @@ class CLI:
       self.selected_device = None
       
     finally:
+      pythoncom.ReleaseComObject(pnmr)
       if self.selected_device == "BVT":
         device.set_point_and_start_ramp(300)
         device._release_com()
