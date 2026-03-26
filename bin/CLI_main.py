@@ -317,7 +317,7 @@ class CLI:
       if screen_thread is not None:
         self.stop_run_screen.set()
         screen_thread.join()
-      pnmr = None
+      del pnmr
       device = None
       self.selected_experiment = None
       self.selected_device = None
@@ -325,7 +325,6 @@ class CLI:
     finally:
       if self.selected_device == "BVT":
         device.set_point_and_start_ramp(300)
-        device.release_com()
       if self.selected_device == "KM3P":
         device.set_point_and_start_ramp(27)
       if check_thread is not None:
@@ -337,7 +336,7 @@ class CLI:
       if screen_thread is not None:
         self.stop_run_screen.set()
         screen_thread.join()
-      pnmr = None
+      del pnmr
       device = None
       self.experiment_running = False
       self.selected_experiment = None
