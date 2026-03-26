@@ -200,7 +200,7 @@ class CLI:
       step = float(input("Temperature step for interval" + " " +"{}".format(i+1) +" >" ))
       initial_limit = float(input("Initial temperature of interval" + " " +"{}".format(i+1) +" >"))
       final_limit = float(input("Final temperature of interval" + " " +"{}".format(i+1) +" >"))
-      waiting = float(input("Thermalization waiting time for interval (seconds)" + " " +"{}".format(i+1)+" >"))
+      waiting = float(input("Thermalization waiting time for interval" + " " +"{}".format(i+1)+" (seconds) >"))
       waiting_times.append(waiting)
       interval.append(initial_limit)
       t = initial_limit
@@ -213,9 +213,9 @@ class CLI:
           t = t - step
           interval.append(t)
       temps.append(interval)
+    number_of_pulse_sequences = int(input("How many pulse sequences? >")) #ADD BACK OPTION
     print(CLI_visual.gen_selection(self.applications_files, final_option="Back"))
     pulse_sequences = []
-    number_of_pulse_sequences = int(input("How many pulse sequences? >")) #ADD BACK OPTION
     for i in range(number_of_pulse_sequences):
       ask = int(input("Pulse sequence"  +" "+"{}".format(i+1) + " >"))
       pulse_sequences.append(self.applications_files[ask-1])
