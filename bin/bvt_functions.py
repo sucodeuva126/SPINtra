@@ -10,12 +10,14 @@ class BVT:
     self._tls = threading.local()
 
   def _ensure_com(self):
+    if not hasattr(self._tls, "initialized"):
         self._tls.emb = win.Dispatch("WinAcquisit.Embedding")
         self._tls.bvt_server = win.Dispatch("WinAcquisit.BVT")
         self._tls.uti = win.Dispatch("WinAcquisit.Utilities")
         self._tls.initialized = True
 
   def _release_com(self):
+    if hasattr(self._tls, "initialized"):
         del self._tls.emb
         del self._tls.bvt_server
         del self._tls.uti
