@@ -55,7 +55,7 @@ class BVT:
     try:
         self.current_temp  = self._tls.bvt_server.GetTemperature #saves the temperature read
     except Exception as e:
-        print("ERROR IN READING TEMPERATURES", e)
+        print("ERROR READING BVT TEMPERATURES", e)
     self._release_com()
 
   def check_temperature(self, temp): #thread function
