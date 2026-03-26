@@ -10,14 +10,12 @@ class BVT:
     self._tls = threading.local()
 
   def _ensure_com(self):
-    if not hasattr(self._tls, "initialized"):
         self._tls.emb = win.Dispatch("WinAcquisit.Embedding")
         self._tls.bvt_server = win.Dispatch("WinAcquisit.BVT")
         self._tls.uti = win.Dispatch("WinAcquisit.Utilities")
         self._tls.initialized = True
 
   def _release_com(self):
-    if hasattr(self._tls, "initialized"):
         del self._tls.emb
         del self._tls.bvt_server
         del self._tls.uti
@@ -56,7 +54,7 @@ class BVT:
         self.current_temp  = self._tls.bvt_server.GetTemperature #saves the temperature read
     except Exception as e:
         print("ERROR READING BVT TEMPERATURES", e)
-
+    self._release_com()
 
   def check_temperature(self, temp): #thread function
     self._ensure_com()
@@ -65,6 +63,6 @@ class BVT:
             self.isTemperatureReady = True
         else:
             self.isTemperatureReady = False
-
+    self._release_com()
 
 

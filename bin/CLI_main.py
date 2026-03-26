@@ -232,15 +232,14 @@ class CLI:
 
   def current_experiment_screen(self, device, interrupt):
     while not self.stop_run_screen.is_set() and not interrupt.is_set():
-        with self.lock:
-          temp = device.current_temp
-          if device.isTemperatureReady:
-            color = GREEN
-          else:
-            color = YELLOW
-          sys.stdout.write("\r{0}Current temperature: {2}{3}   |   {0}Current pulse sequence: {1}{4}   |   {0}Current waiting time for thermalization: {1}{5}".format(CYAN, WHITE, color, temp, self.current_app, self.current_waiting))
-          sys.stdout.flush()
-          time.sleep(0.5)
+      with self.lock:
+        if device.isTemperatureReady:
+          color = GREEN
+        else:
+          color = YELLOW
+        sys.stdout.write("\r{0}Current temperature: {2}{3}   |   {0}Current pulse sequence: {1}{4}   |   {0}Current waiting time for thermalization: {1}{5}".format(CYAN, WHITE, color, device.temp, self.current_app, self.current_waiting))
+        sys.stdout.flush()
+        time.sleep(0.5)
  
   def run_experiment(self):
     self.experiment_running = True
@@ -309,6 +308,7 @@ class CLI:
           screen_thread.join() #end
     
     except KeyboardInterrupt:
+      pnmr.ClosePNMR(True)
       if check_thread is not None:
         device.stop_check.set()
         check_thread.join()
