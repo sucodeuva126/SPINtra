@@ -318,11 +318,12 @@ class CLI:
         self.stop_run_screen.set()
         screen_thread.join()
       del pnmr
-      device = None
+      del device
       self.selected_experiment = None
       self.selected_device = None
       
     finally:
+      pnmr.ClosePNMR()
       if self.selected_device == "BVT":
         device.set_point_and_start_ramp(300)
       if self.selected_device == "KM3P":
@@ -337,7 +338,7 @@ class CLI:
         self.stop_run_screen.set()
         screen_thread.join()
       del pnmr
-      device = None
+      del device
       self.experiment_running = False
       self.selected_experiment = None
       self.selected_device = None
