@@ -11,6 +11,7 @@ class BVT:
 #COM objects are not thread safe #PROBLEM HERE
 
   def start(self, gas_flow, evaporator):
+    pythoncom.CoInitialize()
     self.emb = win.Dispatch("WinAcquisit.Embedding")
     self.emb.ShowWindow(self.emb.NORMAL)
     self.bvt_server = win.Dispatch("WinAcquisit.BVT")
@@ -24,24 +25,28 @@ class BVT:
     return
 
   def set_point_and_start_ramp(self, temp):
+    pythoncom.CoInitialize()
     self.bvt_server = win.Dispatch("WinAcquisit.BVT")
     self.bvt_server.DesiredTemperature(temp)
     self.bvt_server.RampGO
     self.bvt_server = None
-    del self.bvt_server
+    pythoncom.CoUninitialize()
     return 
 
   def autotune(self, switch):
+    pythoncom.CoInitialize()
     self.bvt_server = win.Dispatch("WinAcquisit.BVT")
     if switch == True:
       self.bvt_server.PIDTuneOn(True)
     if switch == False:
       self.bvt_server.PIDTuneOn(False)
     self.bvt_server = None
-    del self.bvt_server
+    pythoncom.CoUninitialize()
+    
     return
     
   def get_temperature(self):
+    pythoncom.CoInitialize()
     self.bvt_server = win.Dispatch("WinAcquisit.BVT")
     try:
         self.current_temp  = self.bvt_server.GetTemperature #saves the temperature read
@@ -49,10 +54,11 @@ class BVT:
     except Exception as e:
         self.bvt_server = None
         print("ERROR READING BVT TEMPERATURES", e)
-    del self.bvt_server
+    pythoncom.CoUninitialize()
     
 
   def check_temperature(self, temp): #thread function
+    pythoncom.CoInitialize()
     self.bvt_server = win.Dispatch("WinAcquisit.BVT")
     if self.current_temp is not None:
         if self.bvt_server.IsTemperatureOK: #verify if the mesured temperature is the desired temperature 
@@ -60,6 +66,8 @@ class BVT:
         else:
             self.isTemperatureReady = False
     self.bvt_server = None
-    del self.bvt_server
+    pythoncom.CoUninitialize()
+    
+    
 
 
