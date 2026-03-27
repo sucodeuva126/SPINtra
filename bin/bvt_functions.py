@@ -65,8 +65,8 @@ class BVT:
         srv.PIDTuneOn(bool(switch))
         return
 
-    def get_temperature(self, stop_get):
-        while not stop_get.is_set():
+    def get_temperature(self, stop_get, interrupt):
+        while not stop_get.is_set() and not interrupt.is_set():
           self.uti = win.Dispatch("WinAcquisit.Utilities")
           self.emb = win.Dispatch("WinAcquisit.Embedding")
           self.emb.ShowWindow(self.emb.NORMAL)
