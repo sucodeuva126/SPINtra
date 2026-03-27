@@ -35,7 +35,6 @@ class BVT:
             del self._tls.initialized
 
     def start(self, gas_flow, evaporator):
-        self._ensure_com()
         srv = self._tls.bvt_server
         srv.GasFlow(gas_flow)
         srv.GasFlowOn(True)
@@ -46,20 +45,17 @@ class BVT:
         return
 
     def set_point_and_start_ramp(self, temp):
-        self._ensure_com()
         srv = self._tls.bvt_server
         srv.DesiredTemperature(temp)
         srv.RampGO
         return
 
     def autotune(self, switch):
-        self._ensure_com()
         srv = self._tls.bvt_server
         srv.PIDTuneOn(bool(switch))
         return
 
     def get_temperature(self):
-        self._ensure_com()
         try:
             self.current_temp = self._tls.bvt_server.GetTemperature
         except Exception as e:
