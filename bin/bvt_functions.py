@@ -75,5 +75,7 @@ class BVT:
           self.isTemperatureReady = True
         else:
           self.isTemperatureReady = False
-
+        self.uti = None
+        self.emb = None
+        self.bvt_server = None
 
