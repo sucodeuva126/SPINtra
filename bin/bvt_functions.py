@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import win32com.client as win
 import pythoncom
 import threading
