@@ -288,7 +288,7 @@ class CLI:
           time.sleep(wait)
           self.current_waiting = None
           for p in range(len(pulse_sequences)):
-            pnmr.ReleaseApplication()
+            pnmr.ReleaseApplication
             self.current_app = pulse_sequences[p]
             pnmr.LoadApplication(current_app_path[p])
             if not pnmr.IsApplicationLoaded:
@@ -296,7 +296,7 @@ class CLI:
             pnmr.RunApplication()
             while pnmr.IsApplicationRunning and not interrupt.is_set():
               time.sleep(1)
-          pnmr.ReleaseApplication()
+          pnmr.ReleaseApplication
           device.stop_get.set()
           self.stop_run_screen.set()
           get_thread.join()
