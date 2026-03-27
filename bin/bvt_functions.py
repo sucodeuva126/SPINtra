@@ -9,7 +9,6 @@ class BVT:
         self.isTemperatureReady = False
         self.current_temp = None
         self.threshold = threshold
-        self.stop_get = threading.Event()
 
     #  inicializa COM UMA VEZ por thread
     def _ensure_com(self):
@@ -66,8 +65,8 @@ class BVT:
         srv.PIDTuneOn(bool(switch))
         return
 
-    def get_temperature(self):
-        while not self.stop_get.is_set():
+    def get_temperature(self, stop_get):
+        while not stop_get.is_set():
           self.uti = win.Dispatch("WinAcquisit.Utilities")
           self.emb = win.Dispatch("WinAcquisit.Embedding")
           self.emb.ShowWindow(self.emb.NORMAL)
