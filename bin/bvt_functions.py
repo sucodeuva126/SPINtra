@@ -13,7 +13,6 @@ class BVT:
     #  inicializa COM UMA VEZ por thread
     def _ensure_com(self):
         if not hasattr(self._tls, "initialized"):
-            pythoncom.CoInitialize()
 
             self._tls.emb = win.Dispatch("WinAcquisit.Embedding")
             self._tls.emb.ShowWindow(self._tls.emb.NORMAL)
@@ -33,7 +32,6 @@ class BVT:
             except:
                 pass
 
-            pythoncom.CoUninitialize()
             del self._tls.initialized
 
     def start(self, gas_flow, evaporator):
