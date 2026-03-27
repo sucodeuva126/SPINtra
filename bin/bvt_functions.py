@@ -75,8 +75,10 @@ class BVT:
         except Exception as e:
             print("ERROR READING BVT TEMPERATURES:", e)
         try:
-            if self.current_temp is not None:
-                self.isTemperatureReady = bool(self.bvt_server.IsTemperatureOK)
+          if self.bvt_server.IsTemperatureOK: #verify if the mesured temperature is the desired temperature 
+              self.isTemperatureReady = True
+          else:
+              self.isTemperatureReady = False
         except Exception as e:
             print("ERROR CHECKING TEMPERATURE:", e)
         self.uti = None
