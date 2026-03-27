@@ -17,7 +17,6 @@ class BVT:
             self.uti = win.Dispatch("WinAcquisit.Utilities")
             self.emb = win.Dispatch("WinAcquisit.Embedding")
             self.emb.ShowWindow(self.emb.NORMAL)
-            time.sleep(2)
             self.bvt_server = win.Dispatch("WinAcquisit.BVT")
             self.initialized = True
 
@@ -34,6 +33,10 @@ class BVT:
             del self.initialized
 
     def start(self, gas_flow, evaporator):
+        self.uti = win.Dispatch("WinAcquisit.Utilities")
+        self.emb = win.Dispatch("WinAcquisit.Embedding")
+        self.emb.ShowWindow(self.emb.NORMAL)
+        self.bvt_server = win.Dispatch("WinAcquisit.BVT")
         srv = self.bvt_server
         srv.GasFlow(gas_flow)
         srv.GasFlowOn(True)
@@ -43,18 +46,30 @@ class BVT:
         srv.HeaterOn(True)
         return
 
-    def set_point_and_start_ramp(self, temp):
-        srv = self.bvt_server
-        srv.DesiredTemperature(temp)
-        srv.RampGO
-        return
+    def set_point_and_start_ramp(self, temp):            
+      self.uti = win.Dispatch("WinAcquisit.Utilities")
+      self.emb = win.Dispatch("WinAcquisit.Embedding")
+      self.emb.ShowWindow(self.emb.NORMAL)
+      self.bvt_server = win.Dispatch("WinAcquisit.BVT")
+      srv = self.bvt_server
+      srv.DesiredTemperature(temp)
+      srv.RampGO
+      return
 
-    def autotune(self, switch):
+    def autotune(self, switch):            
+        self.uti = win.Dispatch("WinAcquisit.Utilities")
+        self.emb = win.Dispatch("WinAcquisit.Embedding")
+        self.emb.ShowWindow(self.emb.NORMAL)
+        self.bvt_server = win.Dispatch("WinAcquisit.BVT")
         srv = self.bvt_server
         srv.PIDTuneOn(bool(switch))
         return
 
     def get_temperature(self):
+        self.uti = win.Dispatch("WinAcquisit.Utilities")
+        self.emb = win.Dispatch("WinAcquisit.Embedding")
+        self.emb.ShowWindow(self.emb.NORMAL)
+        self.bvt_server = win.Dispatch("WinAcquisit.BVT")
         try:
             self.current_temp = self.bvt_server.GetTemperature
         except Exception as e:
@@ -64,4 +79,7 @@ class BVT:
                 self.isTemperatureReady = bool(self.bvt_server.IsTemperatureOK)
         except Exception as e:
             print("ERROR CHECKING TEMPERATURE:", e)
+        self.uti = None
+        self.emb = None
+        self.bvt_server = None
 
