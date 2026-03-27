@@ -67,7 +67,7 @@ class BVT:
         return
 
     def get_temperature(self):
-        while not self.stop_run_screen.is_set():
+        while not self.stop_get.is_set():
           self.uti = win.Dispatch("WinAcquisit.Utilities")
           self.emb = win.Dispatch("WinAcquisit.Embedding")
           self.emb.ShowWindow(self.emb.NORMAL)
