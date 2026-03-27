@@ -24,6 +24,9 @@ class BVT:
     self.emb = None
     self.bvt_server = None
     self.uti = None
+    del self.bvt_server
+    del self.emb
+    del self.uti
     return
 
   def set_point_and_start_ramp(self, temp):
@@ -31,6 +34,7 @@ class BVT:
     self.bvt_server.DesiredTemperature(temp)
     self.bvt_server.RampGO
     self.bvt_server = None
+    del self.bvt_server
     return 
 
   def autotune(self, switch):
@@ -40,6 +44,7 @@ class BVT:
     if switch == False:
       self.bvt_server.PIDTuneOn(False)
     self.bvt_server = None
+    del self.bvt_server
     return
     
   def get_temperature(self):
@@ -50,6 +55,7 @@ class BVT:
     except Exception as e:
         self.bvt_server = None
         print("ERROR READING BVT TEMPERATURES", e)
+    del self.bvt_server
     
 
   def check_temperature(self, temp): #thread function
@@ -60,5 +66,6 @@ class BVT:
         else:
             self.isTemperatureReady = False
     self.bvt_server = None
+    del self.bvt_server
 
 
