@@ -243,7 +243,11 @@ class CLI:
         time.sleep(0.5)
  
   def run_experiment(self):
-    subprocess.call(["taskkill", "/IM", "BVT.exe", "/F"])
+    subprocess.call(
+    ["taskkill", "/IM", "WinAcquisit.exe", "/F"],
+    stdout=subprocess.PIPE,
+    stderr=subprocess.PIPE
+    )
     self.experiment_running = True
     temp_tolerance = 1
     current_experiment = file_to_experiment(self.selected_experiment)
@@ -345,7 +349,6 @@ class CLI:
       self.experiment_running = False
       self.selected_experiment = None
       self.selected_device = None
-      subprocess.call(["taskkill", "/IM", "BVT.exe", "/F"])
       print("\n")
       print("Experiment "+ "{}". format(current_experiment.name)  +" has finished...")
       r = raw_input("{} Would you like to return to main menu?[y/n] ".format(WHITE))
