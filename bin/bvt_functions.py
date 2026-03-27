@@ -46,9 +46,7 @@ class BVT:
     self.bvt_server = win.Dispatch("WinAcquisit.BVT")
     try:
         self.current_temp  = self.bvt_server.GetTemperature #saves the temperature read
-        self.emb = None
         self.bvt_server = None
-        self.uti = None
     except Exception as e:
         self.bvt_server = None
         print("ERROR READING BVT TEMPERATURES", e)
