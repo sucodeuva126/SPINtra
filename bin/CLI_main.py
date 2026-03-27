@@ -251,7 +251,6 @@ class CLI:
     pulse_sequences = current_experiment.pulse_sequence
     waiting_times = current_experiment.waiting_time
     get_thread = None
-    check_thread = None
     screen_thread = None
     current_app_path = []
     for p in range(len(pulse_sequences)):
@@ -281,11 +280,8 @@ class CLI:
         for j in range(len(temps[i])):
           device.set_point_and_start_ramp(float(temps[i][j]))
           device.stop_get.clear()  # reset stop flags
-          device.stop_check.clear()
           get_thread = threading.Thread(target=device.get_temperature, args=(interrupt,)) #start monitoring threads
-          check_thread = threading.Thread(target=device.check_temperature, args=(float(temps[i][j]),interrupt,)) #checks if the current temperature is the desired, yes it needs the final comma
           get_thread.start()
-          check_thread.start()
           while not device.isTemperatureReady and not interrupt.is_set():
             time.sleep(1)
           self.current_waiting = wait
@@ -302,17 +298,12 @@ class CLI:
               time.sleep(1)
           pnmr.ReleaseApplication
           device.stop_get.set()
-          device.stop_check.set()
           self.stop_run_screen.set()
           get_thread.join()
-          check_thread.join()
           screen_thread.join() #end
     
     except KeyboardInterrupt:
       pnmr.ClosePNMR(True)
-      if check_thread is not None:
-        device.stop_check.set()
-        check_thread.join()
       if get_thread is not None:
         device.stop_get.set()
         get_thread.join()
@@ -333,9 +324,6 @@ class CLI:
         device.release_com()
       if self.selected_device == "KM3P":
         device.set_point_and_start_ramp(27)
-      if check_thread is not None:
-        device.stop_check.set()
-        check_thread.join()
       if get_thread is not None:
         device.stop_get.set()
         get_thread.join()

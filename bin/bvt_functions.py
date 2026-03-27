@@ -16,13 +16,10 @@ class BVT:
         if not hasattr(self._tls, "initialized"):
             pythoncom.CoInitialize()
             self._tls.uti = win.Dispatch("WinAcquisit.Utilities")
-            time.sleep(2)
             self._tls.emb = win.Dispatch("WinAcquisit.Embedding")
             self._tls.emb.ShowWindow(self._tls.emb.NORMAL)
             time.sleep(2)
-
             self._tls.bvt_server = win.Dispatch("WinAcquisit.BVT")
-            time.sleep(1)
             self._tls.initialized = True
 
     # FINALIZA COM (chamar só no fim da thread!)
@@ -34,7 +31,6 @@ class BVT:
                 del self._tls.uti
             except:
                 pass
-
             pythoncom.CoUninitialize()
             del self._tls.initialized
 
@@ -70,11 +66,9 @@ class BVT:
             self.current_temp = self._tls.bvt_server.GetTemperature
         except Exception as e:
             print("ERROR READING BVT TEMPERATURES:", e)
-
-    def check_temperature(self, temp):
-        self._ensure_com()
         try:
             if self.current_temp is not None:
                 self.isTemperatureReady = bool(self._tls.bvt_server.IsTemperatureOK)
         except Exception as e:
             print("ERROR CHECKING TEMPERATURE:", e)
+
