@@ -3,71 +3,75 @@ import pythoncom
 import threading
 
 class BVT:
-  def __init__(self, threshold):
-    self.isTemperatureReady = False
-    self.current_temp = None
-    self.threshold = threshold
+    def __init__(self, threshold):
+        self.isTemperatureReady = False
+        self.current_temp = None
+        self.threshold = threshold
+        self._tls = threading.local()
 
-#COM objects are not thread safe #PROBLEM HERE
+    #  inicializa COM UMA VEZ por thread
+    def _ensure_com(self):
+        if not hasattr(self._tls, "initialized"):
+            pythoncom.CoInitialize()
 
-  def start(self, gas_flow, evaporator):
-    pythoncom.CoInitialize()
-    self.emb = win.Dispatch("WinAcquisit.Embedding")
-    self.emb.ShowWindow(self.emb.NORMAL)
-    self.bvt_server = win.Dispatch("WinAcquisit.BVT")
-    self.uti = win.Dispatch("WinAcquisit.Utilities")
-    self.bvt_server.GasFlow(gas_flow)
-    self.bvt_server.GasFlowOn(True)
-    if evaporator:
-      self.bvt_server.EvaporatorOn(True)
-      self.bvt_server.EvaporatorPower(gas_flow)
-    self.bvt_server.HeaterOn(True)
-    return
+            self._tls.emb = win.Dispatch("WinAcquisit.Embedding")
+            self._tls.emb.ShowWindow(self._tls.emb.NORMAL)
 
-  def set_point_and_start_ramp(self, temp):
-    pythoncom.CoInitialize()
-    self.bvt_server = win.Dispatch("WinAcquisit.BVT")
-    self.bvt_server.DesiredTemperature(temp)
-    self.bvt_server.RampGO
-    self.bvt_server = None
-    pythoncom.CoUninitialize()
-    return 
+            self._tls.bvt_server = win.Dispatch("WinAcquisit.BVT")
+            self._tls.uti = win.Dispatch("WinAcquisit.Utilities")
 
-  def autotune(self, switch):
-    pythoncom.CoInitialize()
-    self.bvt_server = win.Dispatch("WinAcquisit.BVT")
-    if switch == True:
-      self.bvt_server.PIDTuneOn(True)
-    if switch == False:
-      self.bvt_server.PIDTuneOn(False)
-    self.bvt_server = None
-    pythoncom.CoUninitialize()
-    
-    return
-    
-  def get_temperature(self):
-    pythoncom.CoInitialize()
-    self.bvt_server = win.Dispatch("WinAcquisit.BVT")
-    try:
-        self.current_temp  = self.bvt_server.GetTemperature #saves the temperature read
-        self.bvt_server = None
-    except Exception as e:
-        self.bvt_server = None
-        print("ERROR READING BVT TEMPERATURES", e)
-    pythoncom.CoUninitialize()
-    
+            self._tls.initialized = True
 
-  def check_temperature(self, temp): #thread function
-    pythoncom.CoInitialize()
-    self.bvt_server = win.Dispatch("WinAcquisit.BVT")
-    if self.current_temp is not None:
-        if self.bvt_server.IsTemperatureOK: #verify if the mesured temperature is the desired temperature 
-            self.isTemperatureReady = True
-        else:
-            self.isTemperatureReady = False
-    self.bvt_server = None
-    pythoncom.CoUninitialize()
-    
-    
+    # FINALIZA COM (chamar só no fim da thread!)
+    def release_com(self):
+        if hasattr(self._tls, "initialized"):
+            try:
+                del self._tls.emb
+                del self._tls.bvt_server
+                del self._tls.uti
+            except:
+                pass
 
+            pythoncom.CoUninitialize()
+            del self._tls.initialized
 
+    def start(self, gas_flow, evaporator):
+        self._ensure_com()
+        srv = self._tls.bvt_server
+
+        srv.GasFlow(gas_flow)
+        srv.GasFlowOn(True)
+
+        if evaporator:
+            srv.EvaporatorOn(True)
+            srv.EvaporatorPower(gas_flow)
+
+        srv.HeaterOn(True)
+
+    def set_point_and_start_ramp(self, temp):
+        self._ensure_com()
+        srv = self._tls.bvt_server
+
+        srv.DesiredTemperature(temp)
+        srv.RampGO
+
+    def autotune(self, switch):
+        self._ensure_com()
+        srv = self._tls.bvt_server
+
+        srv.PIDTuneOn(bool(switch))
+
+    def get_temperature(self):
+        self._ensure_com()
+        try:
+            self.current_temp = self._tls.bvt_server.GetTemperature
+        except Exception as e:
+            print("ERROR READING BVT TEMPERATURES:", e)
+
+    def check_temperature(self, temp):
+        self._ensure_com()
+        try:
+            if self.current_temp is not None:
+                self.isTemperatureReady = bool(self._tls.bvt_server.IsTemperatureOK)
+        except Exception as e:
+            print("ERROR CHECKING TEMPERATURE:", e)
