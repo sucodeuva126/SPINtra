@@ -52,7 +52,7 @@ class BVT:
         srv = self._tls.bvt_server
 
         srv.DesiredTemperature(temp)
-        srv.RampGO()
+        srv.RampGO
 
     def autotune(self, switch):
         self._ensure_com()
