@@ -70,18 +70,10 @@ class BVT:
         self.emb = win.Dispatch("WinAcquisit.Embedding")
         self.emb.ShowWindow(self.emb.NORMAL)
         self.bvt_server = win.Dispatch("WinAcquisit.BVT")
-        try:
-            self.current_temp = self.bvt_server.GetTemperature
-        except Exception as e:
-            print("ERROR READING BVT TEMPERATURES:", e)
-        try:
-          if self.bvt_server.IsTemperatureOK: #verify if the mesured temperature is the desired temperature 
-              self.isTemperatureReady = True
-          else:
-              self.isTemperatureReady = False
-        except Exception as e:
-            print("ERROR CHECKING TEMPERATURE:", e)
-        self.uti = None
-        self.emb = None
-        self.bvt_server = None
+        self.current_temp = self.bvt_server.GetTemperature
+        if self.bvt_server.IsTemperatureOK: #verify if the mesured temperature is the desired temperature 
+          self.isTemperatureReady = True
+        else:
+          self.isTemperatureReady = False
+
 
