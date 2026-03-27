@@ -281,7 +281,7 @@ class CLI:
         for j in range(len(temps[i])):
           device.set_point_and_start_ramp(float(temps[i][j]))
           device.stop_get.clear()  # reset stop flags
-          get_thread = threading.Thread(target=device.get_temperature, args=( interrupt,)) #start monitoring threads
+          get_thread = threading.Thread(target=device.get_temperature, args=( device, interrupt,)) #start monitoring threads
           get_thread.start()
           while not device.isTemperatureReady and not interrupt.is_set():
             time.sleep(1)
