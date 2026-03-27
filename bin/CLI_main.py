@@ -24,7 +24,7 @@ signal.signal(signal.SIGINT, handle_keyboard_interrupt)
 class CLI:
   def __init__(self):
     colorama.init()
-    self.version = "1.0"
+    self.version = "TEST"
     self.experiments_dir_path = "{}".format(dir_location)+  "\\"  + "{}".format(dir_name)+ "\\" + "{}".format("Experiments") #ATENÇÂO COM A LOCALIZAÇÂO DO DIRETORIO, VER NO PC DO LAB
     self.experiments_files = os.listdir(self.experiments_dir_path) #lists existent experiment files in the Experiments directory
     self.applications_dir_path = "{}".format(dir_location)+  "\\"  + "{}".format(dir_name)+ "\\" + "{}".format("Applications")
@@ -324,6 +324,8 @@ class CLI:
       if screen_thread is not None:
         self.stop_run_screen.set()
         screen_thread.join()
+      if self.selected_device == "BVT": 
+        device.release_com()
       del pnmr
       del device
       self.selected_experiment = None
@@ -333,7 +335,6 @@ class CLI:
       pnmr.ClosePNMR(True)
       if self.selected_device == "BVT":
         device.set_point_and_start_ramp(300)
-        device.release_com()
       if self.selected_device == "KM3P":
         device.set_point_and_start_ramp(27)
       if check_thread is not None:
