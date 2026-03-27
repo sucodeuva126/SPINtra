@@ -9,6 +9,7 @@ class BVT:
         self.isTemperatureReady = False
         self.current_temp = None
         self.threshold = threshold
+        self.stop_get = threading.Event()
 
     #  inicializa COM UMA VEZ por thread
     def _ensure_com(self):
@@ -66,16 +67,17 @@ class BVT:
         return
 
     def get_temperature(self):
-        self.uti = win.Dispatch("WinAcquisit.Utilities")
-        self.emb = win.Dispatch("WinAcquisit.Embedding")
-        self.emb.ShowWindow(self.emb.NORMAL)
-        self.bvt_server = win.Dispatch("WinAcquisit.BVT")
-        self.current_temp = self.bvt_server.GetTemperature
-        if self.bvt_server.IsTemperatureOK: #verify if the mesured temperature is the desired temperature 
-          self.isTemperatureReady = True
-        else:
-          self.isTemperatureReady = False
-        self.uti = None
-        self.emb = None
-        self.bvt_server = None
+        while not self.stop_run_screen.is_set():
+          self.uti = win.Dispatch("WinAcquisit.Utilities")
+          self.emb = win.Dispatch("WinAcquisit.Embedding")
+          self.emb.ShowWindow(self.emb.NORMAL)
+          self.bvt_server = win.Dispatch("WinAcquisit.BVT")
+          self.current_temp = self.bvt_server.GetTemperature
+          if self.bvt_server.IsTemperatureOK: #verify if the mesured temperature is the desired temperature 
+            self.isTemperatureReady = True
+          else:
+            self.isTemperatureReady = False
+          self.uti = None
+          self.emb = None
+          self.bvt_server = None
 
