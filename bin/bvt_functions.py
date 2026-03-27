@@ -21,12 +21,6 @@ class BVT:
       self.bvt_server.EvaporatorOn(True)
       self.bvt_server.EvaporatorPower(gas_flow)
     self.bvt_server.HeaterOn(True)
-    self.emb = None
-    self.bvt_server = None
-    self.uti = None
-    del self.bvt_server
-    del self.emb
-    del self.uti
     return
 
   def set_point_and_start_ramp(self, temp):
