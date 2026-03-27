@@ -2,6 +2,7 @@
 import win32com.client as win
 import pythoncom
 import threading
+import time
 
 class BVT:
     def __init__(self, threshold):
@@ -14,13 +15,14 @@ class BVT:
     def _ensure_com(self):
         if not hasattr(self._tls, "initialized"):
             pythoncom.CoInitialize()
-
+            self._tls.uti = win.Dispatch("WinAcquisit.Utilities")
+            time.sleep(2)
             self._tls.emb = win.Dispatch("WinAcquisit.Embedding")
             self._tls.emb.ShowWindow(self._tls.emb.NORMAL)
+            time.sleep(2)
 
             self._tls.bvt_server = win.Dispatch("WinAcquisit.BVT")
-            self._tls.uti = win.Dispatch("WinAcquisit.Utilities")
-
+            time.sleep(1)
             self._tls.initialized = True
 
     # FINALIZA COM (chamar só no fim da thread!)
