@@ -13,7 +13,7 @@ class BVT:
 
     #  inicializa COM UMA VEZ por thread
     def _ensure_com(self):
-        if not hasattr(self, "initialized"):
+        if not hasattr(self._tls, "initialized"):
             pythoncom.CoInitialize()
             self._tls.uti = win.Dispatch("WinAcquisit.Utilities")
             self._tls.emb = win.Dispatch("WinAcquisit.Embedding")
@@ -23,7 +23,7 @@ class BVT:
 
     # FINALIZA COM (chamar só no fim da thread!)
     def _release_com(self):
-        if hasattr(self, "initialized"):
+        if hasattr(self._tls, "initialized"):
             try:
                 del self._tls.emb
                 del self._tls.bvt_server
@@ -48,20 +48,23 @@ class BVT:
         self._release_com()
         return
 
-    def set_point_and_start_ramp(self, temp):            
+    def set_point_and_start_ramp(self, temp):
+      self._ensure_com()            
       srv = self._tls.bvt_server
       srv.DesiredTemperature(temp)
       srv.RampGO
       return
 
-    def autotune(self, switch):            
+    def autotune(self, switch):     
+        self._ensure_com()       
         srv = self._tls.bvt_server
         srv.PIDTuneOn(bool(switch))
         return
 
     def get_temperature(self):
+        self._ensure_com()
         self.current_temp = self._tls.bvt_server.GetTemperature
-        if self.bvt_server.IsTemperatureOK: #verify if the mesured temperature is the desired temperature 
+        if self._tls.bvt_server.IsTemperatureOK: #verify if the mesured temperature is the desired temperature 
             self.isTemperatureReady = True
         else:
             self.isTemperatureReady = False
