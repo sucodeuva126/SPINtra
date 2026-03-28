@@ -36,7 +36,8 @@ class CLI:
     self.current_app = None
     self.lock = threading.Lock()
     self.stop_run_screen = threading.Event()
-    self.stop_get = threading.Event()
+    self.stop_device_worker = threading.Event()
+    self.stop_device_worker =  threading.Event()
     self.start_menu()
 
   def clean_screen_and_print_header(self):
@@ -242,7 +243,19 @@ class CLI:
         sys.stdout.write("\r{0}Current temperature: {2}{3}   |   {0}Current pulse sequence: {1}{4}   |   {0}Current waiting time for thermalization: {1}{5}".format(CYAN, WHITE, color, device.current_temp, self.current_app, self.current_waiting))
         sys.stdout.flush()
         time.sleep(0.5)
- 
+
+  def device_worker(self, device, temp, interrupt, **kwargs): #sets the point and reads temperatures
+    device.start(**kwargs)
+    device.set_point_and_start_ramp(temp)
+    try:
+      while not self.stop_device_worker.is_set() and not interrupt.is_set():
+        device.get_temperature()
+    except:
+      print("DEVICE WORKER ERROR")
+    finally:
+      device.end()
+
+
   def run_experiment(self):
     self.experiment_running = True
     temp_tolerance = 1
@@ -251,7 +264,7 @@ class CLI:
     temps = current_experiment.temperatures #matrix with intervals(lines) and temperatures(columns)
     pulse_sequences = current_experiment.pulse_sequence
     waiting_times = current_experiment.waiting_time
-    get_thread = None
+    device_worker_thread = None
     screen_thread = None
     current_app_path = []
     for p in range(len(pulse_sequences)):
@@ -271,18 +284,17 @@ class CLI:
         ev = True
       else:
         ev = False
-      device.start(gas_flow = g, evaporator = ev) #works only for the bvt
-    self.stop_run_screen.clear()
-    screen_thread = threading.Thread(target=self.current_experiment_screen, args=(device, interrupt,))
-    screen_thread.start() 
     try:
       for i in range(len(temps)):
         wait = float(waiting_times[i])
         for j in range(len(temps[i])):
           device.set_point_and_start_ramp(float(temps[i][j]))
-          device.stop_get.clear()  # reset stop flags
-          get_thread = threading.Thread(target=device.get_temperature, args=(interrupt,)) #start monitoring threads
-          get_thread.start()
+          self.stop_device_worker.clear()  # reset stop flags
+          device_worker_thread = threading.Thread(target=self.device_worker, args=(device, float(temps[i][j]), interrupt, g, ev,)) #start monitoring temp
+          device_worker_thread.start()
+          self.stop_run_screen.clear()
+          screen_thread = threading.Thread(target=self.current_experiment_screen, args=(device, interrupt,))
+          screen_thread.start() 
           while not device.isTemperatureReady and not interrupt.is_set():
             time.sleep(1)
           self.current_waiting = wait
@@ -298,16 +310,16 @@ class CLI:
             while pnmr.IsApplicationRunning and not interrupt.is_set():
               time.sleep(1)
           pnmr.ReleaseApplication
-          device.stop_get.set()
+          self.stop_device_worker.set()
           self.stop_run_screen.set()
-          get_thread.join()
+          device_worker_thread.join()
           screen_thread.join() #end
     
     except KeyboardInterrupt:
       pnmr.ClosePNMR(True)
-      if get_thread is not None:
-        device.stop_get.set()
-        get_thread.join()
+      if device_worker_thread is not None:
+        self.stop_device_worker.set()
+        device_worker_thread.join()
       if screen_thread is not None:
         self.stop_run_screen.set()
         screen_thread.join()
@@ -325,9 +337,9 @@ class CLI:
         device.release_com()
       if self.selected_device == "KM3P":
         device.set_point_and_start_ramp(27)
-      if get_thread is not None:
-        device.stop_get.set()
-        get_thread.join()
+      if device_worker_thread is not None:
+        self.stop_device_worker.set()
+        device_worker_thread.join()
       if screen_thread is not None:
         self.stop_run_screen.set()
         screen_thread.join()

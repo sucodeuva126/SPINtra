@@ -21,7 +21,7 @@ class BVT:
             self.initialized = True
 
     # FINALIZA COM (chamar só no fim da thread!)
-    def release_com(self):
+    def _release_com(self):
         if hasattr(self, "initialized"):
             try:
                 del self.emb
@@ -33,10 +33,7 @@ class BVT:
             del self.initialized
 
     def start(self, gas_flow, evaporator):
-        self.uti = win.Dispatch("WinAcquisit.Utilities")
-        self.emb = win.Dispatch("WinAcquisit.Embedding")
-        self.emb.ShowWindow(self.emb.NORMAL)
-        self.bvt_server = win.Dispatch("WinAcquisit.BVT")
+        self._ensure_com()
         srv = self.bvt_server
         srv.GasFlow(gas_flow)
         srv.GasFlowOn(True)
@@ -45,38 +42,27 @@ class BVT:
             srv.EvaporatorPower(gas_flow)
         srv.HeaterOn(True)
         return
+    
+    def end(self):
+        self._release_com()
+        return
 
     def set_point_and_start_ramp(self, temp):            
-      self.uti = win.Dispatch("WinAcquisit.Utilities")
-      self.emb = win.Dispatch("WinAcquisit.Embedding")
-      self.emb.ShowWindow(self.emb.NORMAL)
-      self.bvt_server = win.Dispatch("WinAcquisit.BVT")
       srv = self.bvt_server
       srv.DesiredTemperature(temp)
       srv.RampGO
       return
 
     def autotune(self, switch):            
-        self.uti = win.Dispatch("WinAcquisit.Utilities")
-        self.emb = win.Dispatch("WinAcquisit.Embedding")
-        self.emb.ShowWindow(self.emb.NORMAL)
-        self.bvt_server = win.Dispatch("WinAcquisit.BVT")
         srv = self.bvt_server
         srv.PIDTuneOn(bool(switch))
         return
 
-    def get_temperature(self, interrupt):
-          self.uti = win.Dispatch("WinAcquisit.Utilities")
-          self.emb = win.Dispatch("WinAcquisit.Embedding")
-          self.emb.ShowWindow(self.emb.NORMAL)
-          self.bvt_server = win.Dispatch("WinAcquisit.BVT")
-          while not interrupt.is_set():
-            self.current_temp = self.bvt_server.GetTemperature
-            if self.bvt_server.IsTemperatureOK: #verify if the mesured temperature is the desired temperature 
-              self.isTemperatureReady = True
-            else:
-              self.isTemperatureReady = False
-          self.uti = None
-          self.emb = None
-          self.bvt_server = None
+    def get_temperature(self):
+        self.current_temp = self.bvt_server.GetTemperature
+        if self.bvt_server.IsTemperatureOK: #verify if the mesured temperature is the desired temperature 
+            self.isTemperatureReady = True
+        else:
+            self.isTemperatureReady = False
+
 
