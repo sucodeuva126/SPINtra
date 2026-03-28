@@ -28,6 +28,9 @@ class Device:
     
     def autotune(self, switch):
         return self.device.autotune(switch)
+    
+    def end(self):
+        return self.device.end()
 
         
 
