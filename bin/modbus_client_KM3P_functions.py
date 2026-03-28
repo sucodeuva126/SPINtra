@@ -15,6 +15,9 @@ class KM3P:
     def start(self):
         return
 
+    def end(self):
+        return
+
     def set_sensor(self):
         S = str(input("Choose the sensor type(j for thermocouple, c for Pt100):")).lower()
         if S == 'c': #Pt100 sensor is value 7 on manual
@@ -68,7 +71,7 @@ class KM3P:
         except Exception as e:
             print("ERROR IN SETTING POINT", e)
         self.client.close()
-        return None
+        return 
 
     def get_temperature(self): #thread function
         try:
@@ -76,17 +79,15 @@ class KM3P:
             rq = self.client.read_holding_registers(1, 1, unit=self.UNIT) #reads the mesured temperature register for KM3P
             temp = float(rq.registers[0])/10 #just converting again the reading temperature, for example from 500(50° at KM3P) to 50
             self.current_temp = temp #saves the temperature read
+            if self.current_temp is not None:
+                if abs(self.current_temp-temp)<self.threshold: #verify if the mmesured temperature is the desired temperature 
+                    self.isTemperatureReady = True
+                else:
+                    self.isTemperatureReady = False
         except Exception as e:
             print("ERROR IN READING TEMPERATURES", e)
         finally:
             self.client.close()
-
-    def check_temperature(self, temp): #thread function
-                if self.current_temp is not None:
-                    if abs(self.current_temp-temp)<self.threshold: #verify if the mmesured temperature is the desired temperature 
-                        self.isTemperatureReady = True
-                    else:
-                        self.isTemperatureReady = False
 
   
 
