@@ -245,15 +245,16 @@ class CLI:
         time.sleep(0.5)
 
   def device_worker(self, device, temp, interrupt, **kwargs): #sets the point and reads temperatures
-    device.start(**kwargs)
-    device.set_point_and_start_ramp(temp)
-    try:
-      while not self.stop_device_worker.is_set() and not interrupt.is_set():
-        device.get_temperature()
-    except:
-      print("DEVICE WORKER ERROR")
-    finally:
-      device.end()
+      device.start(**kwargs)
+      device.set_point_and_start_ramp(temp)
+      try:
+        while not self.stop_device_worker.is_set() and not interrupt.is_set():
+          device.get_temperature()
+          time.sleep(0.5)
+      except:
+        print("DEVICE WORKER ERROR") 
+      finally:
+        device.end()
 
 
   def run_experiment(self):
@@ -288,9 +289,8 @@ class CLI:
       for i in range(len(temps)):
         wait = float(waiting_times[i])
         for j in range(len(temps[i])):
-          device.set_point_and_start_ramp(float(temps[i][j]))
           self.stop_device_worker.clear()  # reset stop flags
-          device_worker_thread = threading.Thread(target=self.device_worker, args=(device, float(temps[i][j]), interrupt, g, ev,)) #start monitoring temp
+          device_worker_thread = threading.Thread(target=self.device_worker, args=(device, float(temps[i][j]), interrupt), kwargs={"gas_flow": g, "evaporator": ev}) #start monitoring temp
           device_worker_thread.start()
           self.stop_run_screen.clear()
           screen_thread = threading.Thread(target=self.current_experiment_screen, args=(device, interrupt,))

@@ -9,30 +9,33 @@ class BVT:
         self.isTemperatureReady = False
         self.current_temp = None
         self.threshold = threshold
+        self._tls = threading.local()
 
     #  inicializa COM UMA VEZ por thread
     def _ensure_com(self):
         if not hasattr(self, "initialized"):
-            self.uti = win.Dispatch("WinAcquisit.Utilities")
-            self.emb = win.Dispatch("WinAcquisit.Embedding")
-            self.emb.ShowWindow(self.emb.NORMAL)
-            self.bvt_server = win.Dispatch("WinAcquisit.BVT")
-            self.initialized = True
+            pythoncom.CoInitialize()
+            self._tls.uti = win.Dispatch("WinAcquisit.Utilities")
+            self._tls.emb = win.Dispatch("WinAcquisit.Embedding")
+            self._tls.emb.ShowWindow(self.emb.NORMAL)
+            self._tls.bvt_server = win.Dispatch("WinAcquisit.BVT")
+            self._tls.initialized = True
 
     # FINALIZA COM (chamar só no fim da thread!)
     def _release_com(self):
         if hasattr(self, "initialized"):
             try:
-                del self.emb
-                del self.bvt_server
-                del self.uti
+                del self._tls.emb
+                del self._tls.bvt_server
+                del self._tls.uti
             except:
                 pass
-            del self.initialized
+            pythoncom.CoUninitialize()
+            del self._tls.initialized
 
     def start(self, gas_flow, evaporator):
         self._ensure_com()
-        srv = self.bvt_server
+        srv = self._tls.bvt_server
         srv.GasFlow(gas_flow)
         srv.GasFlowOn(True)
         if evaporator:
@@ -46,18 +49,18 @@ class BVT:
         return
 
     def set_point_and_start_ramp(self, temp):            
-      srv = self.bvt_server
+      srv = self._tls.bvt_server
       srv.DesiredTemperature(temp)
       srv.RampGO
       return
 
     def autotune(self, switch):            
-        srv = self.bvt_server
+        srv = self._tls.bvt_server
         srv.PIDTuneOn(bool(switch))
         return
 
     def get_temperature(self):
-        self.current_temp = self.bvt_server.GetTemperature
+        self.current_temp = self._tls.bvt_server.GetTemperature
         if self.bvt_server.IsTemperatureOK: #verify if the mesured temperature is the desired temperature 
             self.isTemperatureReady = True
         else:
