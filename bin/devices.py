@@ -18,7 +18,7 @@ class Device:
     def start(self, **kwargs):
         return self.device.start(**kwargs)
 
-    def get_temperature(self, interrupt):
+    def get_temperature(self):
         self.device.get_temperature()
         self.current_temp = self.device.current_temp
         self.isTemperatureReady = self.device.isTemperatureReady

@@ -37,7 +37,6 @@ class CLI:
     self.lock = threading.Lock()
     self.stop_run_screen = threading.Event()
     self.stop_device_worker = threading.Event()
-    self.stop_device_worker =  threading.Event()
     self.start_menu()
 
   def clean_screen_and_print_header(self):
