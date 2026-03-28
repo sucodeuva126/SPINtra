@@ -11,6 +11,7 @@ import threading
 import colorama
 import signal
 import subprocess
+import shutil
 from tqdm import tqdm
 
 interrupt = threading.Event()
@@ -223,6 +224,15 @@ class CLI:
       pulse_sequences.append(self.applications_files[ask-1])
     experiment = Experiment(name, device, temps, waiting_times, pulse_sequences)
     experiment.create_experiment_file(name)
+    save = raw_input("Do you want to save this experiment in some external directory?[y/n] ")
+    if save == "y":
+      save_path = raw_input("Directory path > ")
+      shutil.copy(self.experiments_dir_path + "\\" + "{}".format(name), save_path)
+    elif save == 'n':
+      save_path = None
+    else:
+      print("This option doesn't exist, moving foward...")
+      time.sleep(0.5)
     print("Experiment" + " " +"\"" + "{}".format(name) + "\"" + " " + "has been created, returning to menu in 2s...")
     time.sleep(2)
     self.start_menu()
