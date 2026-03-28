@@ -17,7 +17,7 @@ class BVT:
             pythoncom.CoInitialize()
             self._tls.uti = win.Dispatch("WinAcquisit.Utilities")
             self._tls.emb = win.Dispatch("WinAcquisit.Embedding")
-            self._tls.emb.ShowWindow(self.emb.NORMAL)
+            self._tls.emb.ShowWindow(self._tls.emb.NORMAL)
             self._tls.bvt_server = win.Dispatch("WinAcquisit.BVT")
             self._tls.initialized = True
 
