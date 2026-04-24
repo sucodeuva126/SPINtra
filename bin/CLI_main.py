@@ -243,7 +243,7 @@ class CLI:
       time.sleep(0.5)
     print("Experiment" + " " +"\"" + "{}".format(name) + "\"" + " " + "has been created, returning to menu in 2s...")
     time.sleep(2)
-    #self.start_menu()
+    self.start_menu()
     return None
 
   def exit(self):
