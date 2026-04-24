@@ -200,21 +200,26 @@ class CLI:
     number_of_temps_intervals = int(input("How many temperatures intervals? > "))
     for i in range(number_of_temps_intervals):
       interval = []
-      step = float(input("Temperature step for interval" + " " +"{}".format(i+1) +" >" ))
-      initial_limit = float(input("Initial temperature of interval" + " " +"{}".format(i+1) +" >"))
-      final_limit = float(input("Final temperature of interval" + " " +"{}".format(i+1) +" >"))
+      constant_mode = raw_input("Constant temperature mode for interval" + " " +"{}".format(i+1) +" [y/n]?")
+      if constant_mode == "y":
+        t = float(input("Constant temperature for interval"+ " " +"{}".format(i+1) +" >"))
+        interval.append(t)
+      else:
+        step = float(input("Temperature step for interval" + " " +"{}".format(i+1) +" >" ))
+        initial_limit = float(input("Initial temperature of interval" + " " +"{}".format(i+1) +" >"))
+        final_limit = float(input("Final temperature of interval" + " " +"{}".format(i+1) +" >"))
+        interval.append(initial_limit)
+        t = initial_limit
+        if final_limit > initial_limit: 
+          while t < final_limit:
+            t = t + step
+            interval.append(t)
+        else:
+          while t > final_limit:
+            t = t - step
+            interval.append(t)
       waiting = float(input("Thermalization waiting time for interval" + " " +"{}".format(i+1)+" (seconds) >"))
       waiting_times.append(waiting)
-      interval.append(initial_limit)
-      t = initial_limit
-      if final_limit > initial_limit: 
-        while t < final_limit:
-          t = t + step
-          interval.append(t)
-      else:
-        while t > final_limit:
-          t = t - step
-          interval.append(t)
       temps.append(interval)
     number_of_pulse_sequences = int(input("How many pulse sequences? >")) #ADD BACK OPTION
     print(CLI_visual.gen_selection(self.applications_files, final_option="Back"))
