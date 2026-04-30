@@ -48,21 +48,18 @@ class BVT:
         self._release_com()
         return
 
-    def set_point_and_start_ramp(self, temp):
-      self._ensure_com()            
+    def set_point_and_start_ramp(self, temp):          
       srv = self._tls.bvt_server
       srv.DesiredTemperature(temp)
       srv.RampGO
       return
 
-    def autotune(self, switch):     
-        self._ensure_com()       
+    def autotune(self, switch):           
         srv = self._tls.bvt_server
         srv.PIDTuneOn(bool(switch))
         return
 
     def get_temperature(self):
-        self._ensure_com()
         self.current_temp = self._tls.bvt_server.GetTemperature
         if self._tls.bvt_server.IsTemperatureOK: #verify if the mesured temperature is the desired temperature 
             self.isTemperatureReady = True
