@@ -14,7 +14,7 @@ class BVT:
     #  inicializa COM UMA VEZ por thread
     def _ensure_com(self):
         if not hasattr(self._tls, "initialized"):
-            pythoncom.CoInitialize()
+            pythoncom.CoInitializeEx(pythoncom.COINIT_APARTMENTTHREADED)
             self._tls.uti = win.Dispatch("WinAcquisit.Utilities")
             self._tls.emb = win.Dispatch("WinAcquisit.Embedding")
             self._tls.emb.ShowWindow(self._tls.emb.NORMAL)
