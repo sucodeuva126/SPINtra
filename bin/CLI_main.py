@@ -350,7 +350,8 @@ class CLI:
     finally:
       pnmr.ClosePNMR(True)
       if self.selected_device == "BVT":
-        device.start(kwargs={"gas_flow": g, "evaporator": False})
+
+        device.start(**{"gas_flow": g, "evaporator": False})
         device.set_point_and_start_ramp(300)
         device.end()
       if self.selected_device == "KM3P":
