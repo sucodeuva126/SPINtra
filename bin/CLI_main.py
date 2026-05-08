@@ -350,9 +350,13 @@ class CLI:
     finally:
       pnmr.ClosePNMR(True)
       if self.selected_device == "BVT":
+        device.start()
         device.set_point_and_start_ramp(300)
+        device.end()
       if self.selected_device == "KM3P":
+        device.start()
         device.set_point_and_start_ramp(27)
+        device.end()
       if device_worker_thread is not None:
         self.stop_device_worker.set()
         device_worker_thread.join()
