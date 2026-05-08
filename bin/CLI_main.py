@@ -26,6 +26,8 @@ class CLI:
   def __init__(self):
     colorama.init()
     self.version = "TEST"
+    if not os.path.exists("{}".format(dir_location + "\\" + "{}".format(dir_name))+ "\\" +"{}".format("Experiments")): #ATENÇÂO COM A LOCALIZAÇÂO DO DIRETORIO, VER NO PC DO LAB
+      os.makedirs("{}".format(dir_location +"\\" + "{}".format(dir_name))+ "\\" + "{}".format("Experiments"))
     self.experiments_dir_path = "{}".format(dir_location)+  "\\"  + "{}".format(dir_name)+ "\\" + "{}".format("Experiments") #ATENÇÂO COM A LOCALIZAÇÂO DO DIRETORIO, VER NO PC DO LAB
     self.experiments_files = os.listdir(self.experiments_dir_path) #lists existent experiment files in the Experiments directory
     self.applications_dir_path = "{}".format(dir_location)+  "\\"  + "{}".format(dir_name)+ "\\" + "{}".format("Applications")
