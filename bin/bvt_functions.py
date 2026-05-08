@@ -49,10 +49,10 @@ class BVT:
         return
 
     def set_point_and_start_ramp(self, temp):          
-      srv = self._tls.bvt_server
-      srv.DesiredTemperature(temp)
-      srv.RampGO
-      return
+        srv = self._tls.bvt_server
+        srv.DesiredTemperature(temp)
+        srv.RampGO
+        return
 
     def autotune(self, switch):           
         srv = self._tls.bvt_server
