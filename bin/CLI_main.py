@@ -13,6 +13,8 @@ import signal
 import subprocess
 import shutil
 from tqdm import tqdm
+import ctypes
+
 
 interrupt = threading.Event()
 def handle_keyboard_interrupt(signum, frame):
@@ -383,4 +385,7 @@ class CLI:
     return
 
 if __name__ == "__main__":
+  ctypes.windll.user32.ShowWindow( # maximiza a janela do CMD
+    ctypes.windll.kernel32.GetConsoleWindow(),
+    3)
   cli=CLI()
