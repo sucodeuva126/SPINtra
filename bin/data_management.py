@@ -1,8 +1,15 @@
 # -*- coding: utf-8 -*-
 import os, ast
+import sys
 file_path = os.path.abspath(__file__)
-dir_location = os.path.dirname(file_path).replace("\\bin", "")
-dir_name = os.path.basename(dir_location + "\\data")
+
+if getattr(sys, 'frozen', False):
+    BASE_DIR = os.path.dirname(sys.executable)
+else:
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+dir_location = BASE_DIR
+dir_name = "data"
 
 class  Experiment:
     def __init__(self, name, device ,temperatures, waiting_time, pulse_sequence ): #defines a experiment

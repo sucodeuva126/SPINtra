@@ -21,6 +21,7 @@ def handle_keyboard_interrupt(signum, frame):
 signal.signal(signal.SIGINT, handle_keyboard_interrupt)
 
 
+
 class CLI:
   def __init__(self):
     colorama.init()
