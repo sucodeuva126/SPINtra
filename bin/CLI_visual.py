@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-import os
 from data_management import dir_name, dir_location
-import tqdm
-import time
 RED = "\033[91m"
 GREEN = "\033[92m"
 YELLOW = "\033[93m"

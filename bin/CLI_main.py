@@ -10,9 +10,7 @@ from devices import Device
 import threading
 import colorama
 import signal
-import subprocess
 import shutil
-from tqdm import tqdm
 
 
 interrupt = threading.Event()
