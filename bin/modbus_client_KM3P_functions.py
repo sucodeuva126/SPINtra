@@ -8,9 +8,11 @@ class KM3P:
         logging.getLogger("pymodbus").setLevel(logging.WARNING) #turn off pymodbus infernal loggings messages
         self.isTemperatureReady = False
         self.current_temp = None
+        self.desired_temp = None
         self.threshold = threshold
         self.UNIT = 0x1
         self.client = ModbusSerialClient(method='rtu', port='COM6', baudrate=9600, parity='N', stopbits=1, bytesize=8, timeout=1)
+
 
     def start(self):
         return
@@ -59,6 +61,7 @@ class KM3P:
         return None
 
     def set_point_and_start_ramp(self, temp):
+        self.desired_temp = temp
         temp = str(temp)
         if "." in temp:
             raw_temp = int(str(temp).replace(".", "")) #just adjusting for the writing in the registers, for example, km3p reads 500 as 50°, and 5 as 50° 
@@ -79,8 +82,8 @@ class KM3P:
             rq = self.client.read_holding_registers(1, 1, unit=self.UNIT) #reads the mesured temperature register for KM3P
             temp = float(rq.registers[0])/10 #just converting again the reading temperature, for example from 500(50° at KM3P) to 50
             self.current_temp = temp #saves the temperature read
-            if self.current_temp is not None:
-                if abs(self.current_temp-temp)<self.threshold: #verify if the mmesured temperature is the desired temperature 
+            if self.current_temp is not None and self.desired_temp is not None:
+                if abs(self.current_temp-self.desired_temp)<self.threshold: #verify if the mesured temperature is the desired temperature 
                     self.isTemperatureReady = True
                 else:
                     self.isTemperatureReady = False
